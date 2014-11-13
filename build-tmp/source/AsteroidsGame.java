@@ -15,77 +15,104 @@ import java.io.IOException;
 public class AsteroidsGame extends PApplet {
 
 //Vivian Lam, AP Computer Science, Mod 6/7, AsteroidsGame Part1
-SpaceShip bum;
+SpaceShip fly;
 Star[] shiny;
+Asteroid[] rock;
  public void setup() 
 {
-  size(400,400);
-  bum=new SpaceShip();
-  shiny=new Star[(int)(Math.random()*75)];
+  size(700,700);
+  fly=new SpaceShip();
+  shiny=new Star[(int)(Math.random()*200)];
   for(int i=0; i<shiny.length;i++){
     shiny[i]=new Star();
+  }
+  rock=new Asteroid[10];
+  for(int i=0;i<rock.length;i++){
+    rock[i]=new Asteroid();
   }
 }
  public void draw() 
 {
   background(0);
-  bum.move();
-  bum.show();
   for(int i=0;i<shiny.length;i++){
     shiny[i].show();
   }
+  for(int i=0;i<rock.length;i++){
+    rock[i].move();
+    rock[i].show();
+  }
+
+  for(int i=0; i<rock.length;i++){
+  if(dist(fly.getX(), fly.getY(), rock[i].getX(), rock[i].getY())>80){
+    fly.setCrash(false);
+  }else{
+    fly.setCrash(true);
+  }
+}
+
+if(fly.getCrash()==true){
+    fly.move();
+    fly.show2();
+    fly.setCrash(false);  
+    fly.myColor=color(255); 
+  }else{
+  fly.move();
+  fly.show();
+}
 
 }
  public void keyPressed()
  {
-  if(key==CODED && keyCode==LEFT){bum.rotate(-5);} //Rotate Left
-  if(key==CODED && keyCode==RIGHT){bum.rotate(5);} //Rotate Right
-  if(key==CODED && keyCode==UP){bum.accelerate(0.05f);}//accelerate forward
-  if(key==CODED && keyCode==DOWN){bum.accelerate(-0.05f);}//accelerate backward
+  if(key==CODED && keyCode==LEFT){fly.rotate(-5);} //Rotate Left
+  if(key==CODED && keyCode==RIGHT){fly.rotate(5);} //Rotate Right
+  if(key==CODED && keyCode==UP){fly.accelerate(0.1f);}//accelerate forward
+  if(key==CODED && keyCode==DOWN){fly.accelerate(-0.1f);}//accelerate backward
   if(keyPressed==true && key==' '){
-    bum.setX((int)(Math.random()*400));
-    bum.setY((int)(Math.random()*400));
-    bum.myDirectionX=0;
-    bum.myDirectionY=0;
+    fly.setX((int)(Math.random()*height));
+    fly.setY((int)(Math.random()*height));
+    fly.myDirectionX=0;
+    fly.myDirectionY=0;
   }//hyperspace
  }
  class SpaceShip extends Floater  
 {   
+  private boolean crash;
   public SpaceShip()
   {
     corners= 12;
     xCorners = new int [corners];
     yCorners = new int [corners];
-    xCorners[0] = 16;
+    xCorners[0] = 32;
     yCorners[0] = 0;
-    xCorners[1] = 10;
-    yCorners[1] = -6;
-    xCorners[2] = 10;
-    yCorners[2] = -3;
-    xCorners[3] = -8;
-    yCorners[3] = -3;
-    xCorners[4] = -12;
-    yCorners[4] = -10;
-    xCorners[5] = -12;
-    yCorners[5] = -3;
-    xCorners[6] = -16;
+    xCorners[1] = 20;
+    yCorners[1] = -12;
+    xCorners[2] = 20;
+    yCorners[2] = -6;
+    xCorners[3] = -16;
+    yCorners[3] = -6;
+    xCorners[4] = -24;
+    yCorners[4] = -20;
+    xCorners[5] = -24;
+    yCorners[5] = -6;
+    xCorners[6] = -32;
     yCorners[6] = 0;
-    xCorners[7] = -12;
-    yCorners[7] = 3;
-    xCorners[8] = -12;
-    yCorners[8] = 10;
-    xCorners[9] = -8;
-    yCorners[9] = 3;
-    xCorners[10] = 10;
-    yCorners[10] = 3;
-    xCorners[11] = 10;
-    yCorners[11] = 6;  
+    xCorners[7] = -24;
+    yCorners[7] = 6;
+    xCorners[8] = -24;
+    yCorners[8] = 20;
+    xCorners[9] = -16;
+    yCorners[9] = 6;
+    xCorners[10] = 20;
+    yCorners[10] = 6;
+    xCorners[11] = 20;
+    yCorners[11] = 12;  
     myColor= color(255,255,255);
-    myCenterX=200;
-    myCenterY=200;
+    myCenterX=height/2;
+    myCenterY=height/2;
     myDirectionX=0;
     myDirectionY=0;
     myPointDirection=0;
+    crash=false;
   }
   public void setX(int x) {myCenterX=x;}  
   public int getX() {return (int)myCenterX;}   
@@ -97,14 +124,20 @@ Star[] shiny;
   public double getDirectionY() {return (double) myDirectionY;}  
   public void setPointDirection(int degrees) {myPointDirection=degrees;}  
   public double getPointDirection() {return (int) myPointDirection;}  
+  public boolean getCrash() {return (boolean) crash;}
+  public void setCrash(boolean check) {crash=check;}
+  public void show2(){
+    myColor = color(255,0,0);
+    show();
+  }
 }
  class Star
 {
   private int starX, starY;
   public Star()
   {
-    starX=(int)(Math.random()*400);
-    starY=(int)(Math.random()*400);
+    starX=(int)(Math.random()*height);
+    starY=(int)(Math.random()*height);
   }
   public void show()
   {
@@ -113,6 +146,60 @@ Star[] shiny;
     ellipse(starX,starY,5,5);
   }
 }
+ class Asteroid extends Floater
+ {
+ private int speedOfRotations;
+ public Asteroid()
+ {
+  corners=10;
+  xCorners = new int [corners];
+  yCorners = new int [corners];
+  xCorners[0]=48;
+  yCorners[0]=0;
+  xCorners[1]=30;
+  yCorners[1]=-25;
+  xCorners[2]=0;
+  yCorners[2]=-48;
+  xCorners[3]=-20;
+  yCorners[3]=-36;
+  xCorners[4]=-48;
+  yCorners[4]=0;
+  xCorners[5]=-26;
+  yCorners[5]=21;
+  xCorners[6]=-15;
+  yCorners[6]=26;
+  xCorners[7]=-3;
+  yCorners[7]=38;
+  xCorners[8]=3;
+  yCorners[8]=38;
+  xCorners[9]=15;
+  yCorners[9]=48;
+  myColor= color(167);
+  myCenterX=(int)(0);
+  myCenterY=(int)(Math.random()*height);
+  myDirectionX=(int)(Math.random()*10)-5;
+  myDirectionY=(int)(Math.random()*10)-5;
+  myPointDirection=(int)(Math.random()*180);
+  speedOfRotations=(int)(Math.random()*10)-5;
+ }
+ public void move()
+ {   
+    rotate(speedOfRotations);
+    frameRate(30);
+    super.move();
+    
+ }  
+  public void setX(int x) {myCenterX=x;}  
+  public int getX() {return (int)myCenterX;}   
+  public void setY(int y) {myCenterY=y;} 
+  public int getY() {return (int) myCenterY;}   
+  public void setDirectionX(double x) {myDirectionX=x;}  
+  public double getDirectionX() {return (double) myDirectionX;}   
+  public void setDirectionY(double y) {myDirectionY =y;}   
+  public double getDirectionY() {return (double) myDirectionY;}  
+  public void setPointDirection(int degrees) {myPointDirection=degrees;}  
+  public double getPointDirection() {return (int) myPointDirection;}  
+ }
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
 {   
   protected int corners;  //the number of corners, a triangular floater has 3   
