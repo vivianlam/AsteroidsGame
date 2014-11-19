@@ -1,7 +1,7 @@
 
 body {
     background-color: rgb(200,200,200);
-    color: rgb(0,0,0);
+    color: rgb(50,255,100);
     font-family: "Open Sans", sans-serif;
     text-align: center;
 }
@@ -13,11 +13,12 @@ body {
 }
 
 header {
+    color: rgb(50,255,255);
 	
 }
 
 footer {
-	font-style: italic;
+	font-style: bold;
 	font-size: 90%;
 }
 
