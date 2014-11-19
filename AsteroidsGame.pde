@@ -1,47 +1,51 @@
 //Vivian Lam, AP Computer Science, Mod 6/7, AsteroidsGame Part1
 SpaceShip fly;
-Star[] shiny;
-Asteroid[] rock;
+ArrayList<Star> shiny;
+ArrayList<Asteroid> rock;
  public void setup() 
 {
   size(700,700);
   fly=new SpaceShip();
-  shiny=new Star[(int)(Math.random()*200)];
-  for(int i=0; i<shiny.length;i++){
-    shiny[i]=new Star();
+  shiny=new ArrayList<Star>();
+  for(int i=0; i<10;i++){
+    shiny.add(new Star());
   }
-  rock=new Asteroid[10];
-  for(int i=0;i<rock.length;i++){
-    rock[i]=new Asteroid();
+  rock=new ArrayList<Asteroid>();
+  for(int i=0;i<10;i++){
+    rock.add(new Asteroid());
   }
 }
  public void draw() 
 {
   background(0);
-  for(int i=0;i<shiny.length;i++){
-    shiny[i].show();
-  }
-  for(int i=0;i<rock.length;i++){
-    rock[i].move();
-    rock[i].show();
-  }
-
-  for(int i=0; i<rock.length;i++){
-  if(dist(fly.getX(), fly.getY(), rock[i].getX(), rock[i].getY())>80){
-    fly.setCrash(false);
-  }else{
-    fly.setCrash(true);
-  }
-}
-
-if(fly.getCrash()==true){
-    fly.move();
-    fly.show2();
-    fly.setCrash(false);  
-    fly.myColor=color(255); 
-  }else{
   fly.move();
   fly.show();
+  for(int i=0;i<10;i++){
+    shiny.get(i).show();
+  }
+ 
+  for(int i=0; i<rock.size();i++){
+  if(dist(fly.getX(), fly.getY(), rock.get(i).getX(), rock.get(i).getY())>75){
+    rock.get(i).setCrash(false);
+  }else{
+    rock.get(i).setCrash(true);
+  }
+}
+  for(int i=0; i<rock.size(); i++){
+    if (i!=rock.size()){
+    if(rock.get(i).getCrash()==false){
+      rock.get(i).move();
+      rock.get(i).show();
+     //fly.myColor= color(255);
+    }else{
+      fly.myColor=color(255,0,0);
+      rock.remove(i);
+      fly.myColor=color(255);
+      if(rock.size()<9){
+        rock.add(new Asteroid());
+      }
+    }
+  }
 }
 
 }
@@ -60,7 +64,6 @@ if(fly.getCrash()==true){
  }
  class SpaceShip extends Floater  
 {   
-  private boolean crash;
   public SpaceShip()
   {
     corners= 12;
@@ -96,7 +99,6 @@ if(fly.getCrash()==true){
     myDirectionX=0;
     myDirectionY=0;
     myPointDirection=0;
-    crash=false;
   }
   public void setX(int x) {myCenterX=x;}  
   public int getX() {return (int)myCenterX;}   
@@ -107,14 +109,9 @@ if(fly.getCrash()==true){
   public void setDirectionY(double y) {myDirectionY =y;}   
   public double getDirectionY() {return (double) myDirectionY;}  
   public void setPointDirection(int degrees) {myPointDirection=degrees;}  
-  public double getPointDirection() {return (int) myPointDirection;}  
-  public boolean getCrash() {return (boolean) crash;}
-  public void setCrash(boolean check) {crash=check;}
-  public void show2(){
-    myColor = color(255,0,0);
-    show();
-  }
+  public double getPointDirection() {return (int) myPointDirection;}    
 }
+
  class Star
 {
   private int starX, starY;
@@ -133,6 +130,7 @@ if(fly.getCrash()==true){
  class Asteroid extends Floater
  {
  private int speedOfRotations;
+ private boolean crash;
  public Asteroid()
  {
   corners=10;
@@ -165,6 +163,7 @@ if(fly.getCrash()==true){
   myDirectionY=(int)(Math.random()*10)-5;
   myPointDirection=(int)(Math.random()*180);
   speedOfRotations=(int)(Math.random()*10)-5;
+  crash=false;
  }
  public void move()
  {   
@@ -182,7 +181,9 @@ if(fly.getCrash()==true){
   public void setDirectionY(double y) {myDirectionY =y;}   
   public double getDirectionY() {return (double) myDirectionY;}  
   public void setPointDirection(int degrees) {myPointDirection=degrees;}  
-  public double getPointDirection() {return (int) myPointDirection;}  
+  public double getPointDirection() {return (int) myPointDirection;} 
+  public void setCrash(boolean check){crash=check;}
+  public boolean getCrash() {return crash;}
  }
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
 {   
