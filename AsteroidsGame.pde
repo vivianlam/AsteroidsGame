@@ -2,47 +2,33 @@
 SpaceShip fly;
 ArrayList<Star> shiny;
 ArrayList<Asteroid> rock;
-ArrayList<Bullets> power;
  public void setup() 
 {
-  size(700,700,P2D);
+  size(700,700);
   fly=new SpaceShip();
-  power=new ArrayList<Bullets>();
   shiny=new ArrayList<Star>();
-  for(int i=0; i<100;i++){
+  for(int i=0; i<10;i++){
     shiny.add(new Star());
   }
   rock=new ArrayList<Asteroid>();
-  for(int i=0;i<50;i++){
+  for(int i=0;i<10;i++){
     rock.add(new Asteroid());
   }
 }
  public void draw() 
 {
   background(0);
-  for(int i=0;i<100;i++){
+  fly.move();
+  fly.show();
+  for(int i=0;i<10;i++){
     shiny.get(i).show();
   }
  
   for(int i=0; i<rock.size();i++){
-  if(dist(fly.getX(), fly.getY(), rock.get(i).getX(), rock.get(i).getY())>30){
+  if(dist(fly.getX(), fly.getY(), rock.get(i).getX(), rock.get(i).getY())>75){
     rock.get(i).setCrash(false);
   }else{
     rock.get(i).setCrash(true);
-  }
-}
-  for(int i=0; i<rock.size();i++)
-  {
-    for(int j=0; j<power.size();j++)
-    {
-      if(j!=power.size()){
-      if(dist(rock.get(i).getX(), rock.get(i).getY(),power.get(j).getX(),power.get(j).getY())>50){
-        rock.get(i).setCrash(false);
-      }else{
-        rock.get(i).setCrash(true);
-        power.get(j).setCrash(true);
-      }
-    }
   }
 }
   for(int i=0; i<rock.size(); i++){
@@ -50,93 +36,66 @@ ArrayList<Bullets> power;
     if(rock.get(i).getCrash()==false){
       rock.get(i).move();
       rock.get(i).show();
+     //fly.myColor= color(255);
     }else{
+      fly.myColor=color(255,0,0);
       rock.remove(i);
-      if(rock.size()<45){
+      fly.myColor=color(255);
+      if(rock.size()<9){
         rock.add(new Asteroid());
       }
     }
   }
 }
-for(int j=0; j<power.size(); j++){
-  if(j!=power.size()){
-    power.get(j).move();
-    power.get(j).show();
-  if(power.get(j).getX()>=height || power.get(j).getX()<=0 || power.get(j).getY()>height || power.get(j).getY()<0){
-    power.remove(j);
-  }  
-  if(power.get(j).getCrash()==true){
-    power.remove(j);
-  }
-  }
- }
-fly.move();
-fly.show();
+
 }
  public void keyPressed()
  {
   if(key==CODED && keyCode==LEFT){fly.rotate(-5);} //Rotate Left
   if(key==CODED && keyCode==RIGHT){fly.rotate(5);} //Rotate Right
-  if(key==CODED && keyCode==UP){fly.accelerate(0.05);}//accelerate forward
-  if(key==CODED && keyCode==DOWN){fly.accelerate(-0.05);}//accelerate backward
+  if(key==CODED && keyCode==UP){fly.accelerate(0.1);}//accelerate forward
+  if(key==CODED && keyCode==DOWN){fly.accelerate(-0.1);}//accelerate backward
   if(keyPressed==true && key==' '){
-    fly.setX(350);
-    fly.setY(350);
-    fly.setDirectionX(0);
-    fly.setDirectionY(0);
-    fly.accelerate(0);
-    fly.setPointDirection(0);
+    fly.setX((int)(Math.random()*height));
+    fly.setY((int)(Math.random()*height));
+    fly.myDirectionX=0;
+    fly.myDirectionY=0;
   }//hyperspace
-  if(keyPressed==true && key=='x'){
-    power.add(new Bullets());
-    for(int i=0; i<power.size(); i++){
-    power.get(i).move();
-    power.get(i).show();
-  }
-  }
  }
  class SpaceShip extends Floater  
 {   
   public SpaceShip()
   {
-    corners= 17;
+    corners= 12;
     xCorners = new int [corners];
     yCorners = new int [corners];
-    xCorners[0] = 42;
+    xCorners[0] = 32;
     yCorners[0] = 0;
     xCorners[1] = 20;
-    yCorners[1] = -8;
-    xCorners[2] = 22;
-    yCorners[2] = -22;
-    xCorners[3] = 8;
-    yCorners[3] = -20;
-    xCorners[4] = 0;
-    yCorners[4] = -32;
-    xCorners[5] = -8;
-    yCorners[5] = -20;
-    xCorners[6] = -22;
-    yCorners[6] = -22;
-    xCorners[7] = -20;
-    yCorners[7] = -8;
-    xCorners[8] = -32;
-    yCorners[8] = 0;
-    xCorners[9] = -20;
-    yCorners[9] = 8;
-    xCorners[10] = -22;
-    yCorners[10] = 22;
-    xCorners[11] = -8;
-    yCorners[11] = 20; 
-    xCorners[12] = 0;
-    yCorners[12] = 32;
-    xCorners[13] = 8;
-    yCorners[14] = 20;
-    xCorners[15] = 22;
-    yCorners[15] = 22;
-    xCorners[16] = 20;
-    yCorners[16] = 8;
-    myColor= color(44, 144, 100);
-    myCenterX=350;
-    myCenterY=350;
+    yCorners[1] = -12;
+    xCorners[2] = 20;
+    yCorners[2] = -6;
+    xCorners[3] = -16;
+    yCorners[3] = -6;
+    xCorners[4] = -24;
+    yCorners[4] = -20;
+    xCorners[5] = -24;
+    yCorners[5] = -6;
+    xCorners[6] = -32;
+    yCorners[6] = 0;
+    xCorners[7] = -24;
+    yCorners[7] = 6;
+    xCorners[8] = -24;
+    yCorners[8] = 20;
+    xCorners[9] = -16;
+    yCorners[9] = 6;
+    xCorners[10] = 20;
+    yCorners[10] = 6;
+    xCorners[11] = 20;
+    yCorners[11] = 12;  
+    myColor= color(255,255,255);
+    myCenterX=height/2;
+    myCenterY=height/2;
     myDirectionX=0;
     myDirectionY=0;
     myPointDirection=0;
@@ -174,30 +133,34 @@ fly.show();
  private boolean crash;
  public Asteroid()
  {
-  corners=6;
+  corners=10;
   xCorners = new int [corners];
   yCorners = new int [corners];
-  xCorners[0]=-11;
-  yCorners[0]=-8;
-  xCorners[1]=7;
-  yCorners[1]=-8;
-  xCorners[2]=13;
-  yCorners[2]=0;
-  xCorners[3]=6;
-  yCorners[3]=10;
-  xCorners[4]=-11;
-  yCorners[4]=8;
-  xCorners[5]=-5;
-  yCorners[5]=0;
+  xCorners[0]=48;
+  yCorners[0]=0;
+  xCorners[1]=30;
+  yCorners[1]=-25;
+  xCorners[2]=0;
+  yCorners[2]=-48;
+  xCorners[3]=-20;
+  yCorners[3]=-36;
+  xCorners[4]=-48;
+  yCorners[4]=0;
+  xCorners[5]=-26;
+  yCorners[5]=21;
+  xCorners[6]=-15;
+  yCorners[6]=26;
+  xCorners[7]=-3;
+  yCorners[7]=38;
+  xCorners[8]=3;
+  yCorners[8]=38;
+  xCorners[9]=15;
+  yCorners[9]=48;
   myColor= color(167);
   myCenterX=(int)(0);
   myCenterY=(int)(Math.random()*height);
   myDirectionX=(int)(Math.random()*10)-5;
   myDirectionY=(int)(Math.random()*10)-5;
-  if(myDirectionX==0 && myDirectionY==0){
-    myDirectionX=1;
-    myDirectionY=2;
-  }
   myPointDirection=(int)(Math.random()*180);
   speedOfRotations=(int)(Math.random()*10)-5;
   crash=false;
@@ -221,55 +184,6 @@ fly.show();
   public double getPointDirection() {return (int) myPointDirection;} 
   public void setCrash(boolean check){crash=check;}
   public boolean getCrash() {return crash;}
- }
-
- class Bullets extends Floater
- {
-  private double dRadians=myPointDirection*(Math.PI/180);
-  private boolean crash;
-  public Bullets()
-  {
-  myColor=color(0,255,0);
-  myCenterX=fly.getX();
-  myCenterY=fly.getY();
-  myPointDirection=fly.getPointDirection();
-  myDirectionX=5*(Math.cos(dRadians))+fly.getDirectionX();
-  myDirectionY=5*(Math.sin(dRadians))+fly.getDirectionY();
-  crash=false;
-  }
-  public void show()
-  {
-    noStroke();
-    fill(myColor);
-    ellipse((int) myCenterX, (int)myCenterY, 10, 8);
-  }
-  public void move()
-  {
-    if(fly.getDirectionX()>0)
-    {
-    myCenterX += myDirectionX; 
-    }else{
-    myCenterX -=myDirectionX;
-    }
-     if(fly.getDirectionY()>0)
-    {   
-    myCenterY += myDirectionY;   
-    }else{
-    myCenterY -= myDirectionY;
-    }
-  }
-  public void setX(int x) {myCenterX=x;}  
-  public int getX() {return (int)myCenterX;}   
-  public void setY(int y) {myCenterY=y;} 
-  public int getY() {return (int) myCenterY;}   
-  public void setDirectionX(double x) {myDirectionX=x;}  
-  public double getDirectionX() {return (double) myDirectionX;}   
-  public void setDirectionY(double y) {myDirectionY =y;}   
-  public double getDirectionY() {return (double) myDirectionY;}  
-  public void setPointDirection(int degrees) {myPointDirection=degrees;}  
-  public double getPointDirection() {return (int) myPointDirection;} 
-  public void setCrash(boolean check){crash=check;}
-  public boolean getCrash() {return crash;} 
  }
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
 {   
