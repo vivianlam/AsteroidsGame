@@ -21,7 +21,7 @@ ArrayList<Asteroid> rock;
 ArrayList<Bullets> power;
  public void setup() 
 {
-  size(700,700);
+  size(700,700,P2D);
   fly=new SpaceShip();
   power=new ArrayList<Bullets>();
   shiny=new ArrayList<Star>();
@@ -52,14 +52,12 @@ ArrayList<Bullets> power;
     for(int j=0; j<power.size();j++)
     {
       if(j!=power.size()){
-      if(dist(rock.get(i).getX(), rock.get(i).getY(),power.get(j).getX(),power.get(j).getY())>5){
-        rock.get(i).setCrash(false);
-      }else{
-        rock.get(i).setCrash(true);
-        power.get(j).setCrash(true);
-      }
-    }
+      if(dist(rock.get(i).getX(), rock.get(i).getY(),power.get(j).getX(),power.get(j).getY())<13){
+       rock.remove(i);
+       power.remove(j);
   }
+}
+}
 }
   for(int i=0; i<rock.size(); i++){
     if (i!=rock.size()){
@@ -78,14 +76,18 @@ for(int j=0; j<power.size(); j++){
   if(j!=power.size()){
     power.get(j).move();
     power.get(j).show();
+  }
+  if(power.get(j).getX()>=height || power.get(j).getX()<=0 || power.get(j).getY()>height || power.get(j).getY()<0){
+    power.remove(j);
+    }  
+}
+for(int j=0; j<power.size();j++){
   if(power.get(j).getCrash()==true){
     power.remove(j);
   }
-  }
- }
+}
 fly.move();
 fly.show();
-
 }
  public void keyPressed()
  {
@@ -94,15 +96,15 @@ fly.show();
   if(key==CODED && keyCode==UP){fly.accelerate(0.05f);}//accelerate forward
   if(key==CODED && keyCode==DOWN){fly.accelerate(-0.05f);}//accelerate backward
   if(keyPressed==true && key==' '){
-    fly.setX((int)(Math.random()*height));
-    fly.setY((int)(Math.random()*height));
+    fly.setX(350);
+    fly.setY(350);
     fly.setDirectionX(0);
-    fly.setDirectionX(0);
+    fly.setDirectionY(0);
     fly.accelerate(0);
     fly.setPointDirection(0);
   }//hyperspace
   if(keyPressed==true && key=='x'){
-    power.add(new Bullets());
+    power.add(new Bullets(fly));
     for(int i=0; i<power.size(); i++){
     power.get(i).move();
     power.get(i).show();
@@ -149,8 +151,8 @@ fly.show();
     xCorners[16] = 20;
     yCorners[16] = 8;
     myColor= color(44, 144, 100);
-    myCenterX=height/2;
-    myCenterY=height/2;
+    myCenterX=350;
+    myCenterY=350;
     myDirectionX=0;
     myDirectionY=0;
     myPointDirection=0;
@@ -239,16 +241,16 @@ fly.show();
 
  class Bullets extends Floater
  {
-  private double dRadians=myPointDirection*(Math.PI/180);
   private boolean crash;
-  public Bullets()
+  public Bullets(SpaceShip theShip)
   {
   myColor=color(0,255,0);
-  myCenterX=fly.getX();
-  myCenterY=fly.getY();
-  myPointDirection=fly.getPointDirection();
-  myDirectionX=5*(Math.cos(dRadians))+fly.getDirectionX();
-  myDirectionY=5*(Math.sin(dRadians))+fly.getDirectionY();
+  myCenterX=theShip.getX();
+  myCenterY=theShip.getY();
+  myPointDirection=theShip.getPointDirection();
+  double dRadians=myPointDirection*(Math.PI/180);
+  myDirectionX=5*(Math.cos(dRadians))+theShip.getDirectionX();
+  myDirectionY=5*(Math.sin(dRadians))+theShip.getDirectionY();
   crash=false;
   }
   public void show()
@@ -259,6 +261,18 @@ fly.show();
   }
   public void move()
   {
+    /*if(fly.getDirectionX()>0)
+    {
+    myCenterX += myDirectionX; 
+    }else{
+    myCenterX -= myDirectionX;
+    }
+     if(fly.getDirectionY()>0)
+    {   
+    myCenterY += myDirectionY;   
+    }else{
+    myCenterY -= myDirectionY;
+    }*/
     myCenterX+=myDirectionX;
     myCenterY+=myDirectionY;
   }
@@ -351,7 +365,6 @@ abstract class Floater //Do NOT modify the Floater class! Make changes in the Sp
     endShape(CLOSE);  
   }   
 } 
-
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "AsteroidsGame" };
     if (passedArgs != null) {
